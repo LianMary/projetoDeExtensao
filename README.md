@@ -10,8 +10,8 @@ Requisições: Instale o NodeJS e o npm - [install with nvm](https://github.com/
 Siga os passos::
 
 ```sh
-# Step 1: Clone o repositório.
-git clone <YOUR_GIT_URL>
+# Step 1: Clone o repositório de uma branch especifica. 
+git clone --b <nome da branch> <YOUR_GIT_URL>
 
 # Step 2: Vá no diretório que está o projeto.
 cd <nome do projeto>

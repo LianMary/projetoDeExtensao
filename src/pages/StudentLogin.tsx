@@ -1,5 +1,3 @@
-// Cole isto em: src/pages/StudentLogin.tsx - VERSÃO FINAL COM O DEGRADÊ CORRETO
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -48,18 +46,15 @@ export function StudentLogin() {
   }
 
   return (
-    // MUDANÇA PRINCIPAL: O degradê azul e verde que você pediu
     <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-r from-[#5BC0EB] to-[#78E4A2] p-4 md:p-6">
       <div className="w-full max-w-md">
         <div className="mb-6 flex justify-center items-center gap-2">
             <div className="w-10 h-10 bg-black/10 rounded-lg flex items-center justify-center backdrop-blur-sm">
                 <Brain className="w-6 h-6 text-white" />
             </div>
-            {/* Texto do logo ajustado para escuro para melhor contraste */}
             <span className="text-2xl font-bold text-slate-800">TestVocacional</span>
         </div>
 
-        {/* Mantido o card translúcido do estilo "Farias Brito" */}
         <Card className="shadow-2xl bg-white/90 backdrop-blur-sm border-0">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold">Área do Aluno</CardTitle>

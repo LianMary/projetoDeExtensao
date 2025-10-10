@@ -32,18 +32,31 @@ export function StudentLogin() {
     defaultValues: { name: "", phone: "" },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     setError(null);
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    const isLoginSuccessful = true;
-    if (isLoginSuccessful) {
-      navigate("/");
-    } else {
-      setError("Nome ou telefone inválido. Tente novamente.");
+    
+    try {
+      const response = await fetch("URL_DO_BACKEND_AQUI/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (response.ok) {
+        navigate("/");
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || "Nome ou telefone inválido.");
+      }
+    } catch (error) {
+      setError("Não foi possível conectar ao servidor.");
+    } finally {
       setIsLoading(false);
     }
-  }
+}
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-r from-[#5BC0EB] to-[#78E4A2] p-4 md:p-6">

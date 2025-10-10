@@ -32,31 +32,34 @@ export function StudentLogin() {
     defaultValues: { name: "", phone: "" },
   });
 
-async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     setError(null);
-    
+
     try {
-      const response = await fetch("URL_DO_BACKEND_AQUI/login", {
+      // Normaliza o telefone para o padrão E.164 do Brasil (+55DDDNUM)
+      const normalizedPhone = "+55" + values.phone.replace(/\D/g, "");
+
+      const response = await fetch("http://127.0.0.1:8000/api/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: values.name, phone: normalizedPhone }),
       });
 
+      const data = await response.json();
+
       if (response.ok) {
+        console.log("Aluno logado/cadastrado:", data.aluno);
         navigate("/");
       } else {
-        const errorData = await response.json();
-        setError(errorData.message || "Nome ou telefone inválido.");
+        setError(data.detail || "Nome ou telefone inválido.");
       }
-    } catch (error) {
+    } catch {
       setError("Não foi possível conectar ao servidor.");
     } finally {
       setIsLoading(false);
     }
-}
+  }
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-r from-[#5BC0EB] to-[#78E4A2] p-4 md:p-6">
@@ -117,7 +120,6 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
                   </div>
                 )}
                 
-                {/* Botão com as cores da sua paleta original */}
                 <Button 
                   type="submit" 
                   className="w-full bg-[#1E847F] text-white font-bold text-base hover:bg-[#1E847F]/90"

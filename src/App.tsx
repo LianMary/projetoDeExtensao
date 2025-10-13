@@ -1,5 +1,3 @@
-// Conteúdo final e correto para: src/App.tsx
-
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -31,10 +29,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          {/* Rota sem o layout */}
           <Route path="/login" element={<StudentLogin />} />
-
-          {/* Rotas que usam o layout */}
           <Route element={<MainLayout />}>
             <Route path="/" element={<Index />} />
             <Route path="/teste" element={<TestPage />} />

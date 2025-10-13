@@ -1,5 +1,3 @@
-// Substitua o conteúdo do seu arquivo src/pages/TestPage.tsx por este:
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

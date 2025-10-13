@@ -1,5 +1,3 @@
-// Substitua o conteúdo do seu arquivo src/pages/Index.tsx por este:
-
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -100,7 +98,6 @@ const Index = () => {
         </div>
       </section>
       
-      {/* NOVA SEÇÃO DE CADASTRO COM O FORMULÁRIO */}
       <section className="py-24 px-4 bg-background">
         <RegistrationForm />
       </section>

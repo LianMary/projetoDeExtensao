@@ -1,5 +1,3 @@
-// Conteúdo para: src/components/common/Header.tsx
-
 import React from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';

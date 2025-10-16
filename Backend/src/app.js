@@ -1,16 +1,11 @@
 import express from 'express';
+import { router } from './routes/router-test.js';
 
     const app = express();
 
     app.use(express.json());
 
-    app.post('/respostas', (req,res) =>{
-        const resultado = req.body;
-        res.json(resultado);
-
-    });
-
-    
+    app.use('/', router);    
 
     export {
     app

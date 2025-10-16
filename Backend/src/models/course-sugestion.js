@@ -1,4 +1,4 @@
-const sugestionCourse = {
+const sugestedCourse = {
     analityc: ['Adm', 'IT', 'Data science'],
     social: ['Psychology', 'Law', 'Marketing'],
     creative: ['Design', 'Architecture', 'Arts'],
@@ -6,5 +6,5 @@ const sugestionCourse = {
 }
 
 export { 
-    sugestionCourse, 
+    sugestedCourse, 
 };

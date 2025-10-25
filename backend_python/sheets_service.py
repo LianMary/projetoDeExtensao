@@ -1,13 +1,14 @@
 # sheets_service.py
 import gspread
+from gspread.utils import ValueInputOption
 import pandas as pd
 import os
 
 
-# SERVICE_ACCOUNT_FILE = "service_account.json"  # Caminho correto do arquivo JSON
 SERVICE_ACCOUNT_FILE = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", "service_account.json")
 SPREADSHEET_ID = "1Ig1s1KnuOvIJKrEY9EgXzXDZhDwP1NPfVHFJejLxL8Q"   # Nome exato da planilha
 STUDENTS_DATABASE = None
+
 
 def load_spreadsheet_data():
     """Autentica com o Google Sheets e carrega a primeira aba como um DataFrame."""

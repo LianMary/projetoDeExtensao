@@ -1,31 +1,17 @@
 # main.py
 from fastapi import FastAPI, HTTPException, status
-from pydantic import BaseModel
+from pydantic import BaseModel,Field
 import phonenumbers
 import datetime
+from .models import LoginData, ResultadoQuestionario
 
-# Importa o módulo de serviço de planilhas (sheets_service.py)
 import backend_python.sheets_service as sheets_service
 
-#que carai de asa
-# Define a lista para dados pendentes que serão enviados à planilha
 PENDING_DATA_TO_SHEET = [] #
 
-# Define o modelo de dados de entrada para o Login
-class LoginData(BaseModel):
-    nome: str
-    telefone: str
 
-# Define o modelo de dados de entrada para o Questionário
-class FinalData(BaseModel):
-    nome: str
-    telefone: str
-    curso: str #
-
-# Inicializa o aplicativo FastAPI
 app = FastAPI()
 
-# Configuração de CORS (apenas para ambiente de desenvolvimento local)
 from fastapi.middleware.cors import CORSMiddleware
 origins = ["*"] # Permite qualquer origem para desenvolvimento
 app.add_middleware(
@@ -38,7 +24,7 @@ app.add_middleware(
 
 @app.get("/")
 def read_root():
-    """Retorna o status do backend e o endpoint principal."""
+    
     return {"status": "Backend FastAPI rodando", "endpoint_login": "/login"} #
 
 @app.post("/login")
@@ -124,14 +110,14 @@ def login_user(data: LoginData): #
 
 
 @app.post("/submit_results")
-def submit_results(data: FinalData):
+def submit_results(data: ResultadoQuestionario):
     """Armazena o resultado do questionário na lista PENDING_DATA_TO_SHEET."""
     telefone_busca = data.telefone.strip() #
     
     registro = {
         "nome": data.nome.strip(),
         "telefone_id": telefone_busca,
-        "curso_identificado": data.curso.strip(),
+        "curso_identificado": data.area_final.strip(),
         "timestamp": datetime.datetime.now().isoformat()
     } #
     PENDING_DATA_TO_SHEET.append(registro) #
@@ -144,10 +130,9 @@ def submit_results(data: FinalData):
 
 @app.get("/coletar_dados_para_planilha")
 def collect_and_clear_data():
-    """Endpoint de automação para coletar dados pendentes e limpar a fila."""
+    
     global PENDING_DATA_TO_SHEET
     
-    # Cria uma cópia da lista atual (os dados que serão enviados)
     data_to_send = list(PENDING_DATA_TO_SHEET) #
     
     # Limpa a lista global para evitar duplicação na próxima coleta
@@ -159,4 +144,4 @@ def collect_and_clear_data():
         "status": "success",
         "count": len(data_to_send),
         "data": data_to_send
-    } #
+    } 

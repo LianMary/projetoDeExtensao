@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import StudentLogin from "./pages/StudentLogin";
 import TestPage from "./pages/TestPage";
 import { Header } from "./components/common/HeaderTemp"; 
 
@@ -29,7 +28,6 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<StudentLogin />} />
           <Route element={<MainLayout />}>
             <Route path="/" element={<Index />} />
             <Route path="/teste" element={<TestPage />} />

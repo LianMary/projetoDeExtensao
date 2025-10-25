@@ -40,13 +40,6 @@ export function Header() {
                 {link.name}
               </NavLink>
             ))}
-            <Link
-              to="/login"
-              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <LogIn className="w-4 h-4" />
-              Login
-            </Link>
           </nav>
 
           <div className="md:hidden">

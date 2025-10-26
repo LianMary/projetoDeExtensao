@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import TestPage from "./pages/TestPage";
 import { Header } from "./components/common/HeaderTemp"; 
+import StudentLogin from "./pages/StudentLogin";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/teste" element={<TestPage />} />
             <Route path="*" element={<NotFound />} />
+            <Route path="/login" element={<StudentLogin />} />
           </Route>
         </Routes>
       </BrowserRouter>

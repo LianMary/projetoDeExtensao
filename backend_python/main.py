@@ -1,12 +1,13 @@
 # main.py
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, status, Depends
 from pydantic import BaseModel,Field
 import phonenumbers
 import datetime
 from .models import LoginData, ResultadoQuestionario
-
+from .auth import create_access_token,decode_access_token
 import backend_python.sheets_service as sheets_service
-
+from fastapi.security import OAuth2PasswordBearer
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 PENDING_DATA_TO_SHEET = [] #
 
 
@@ -35,16 +36,12 @@ def login_user(data: LoginData): #
 
     print(f"--> Requisição de LOGIN recebida. Nome: {data.nome}, Telefone: {data.telefone}") #
 
-    # --- 1. VALIDAÇÃO DE TELEFONE ---
     try:
-        # Tenta analisar o número como sendo do Brasil (BR)
         parsed_num = phonenumbers.parse(telefone_busca, "BR") #
         
-        # 1.1. Verifica se o número é possível
         if not phonenumbers.is_possible_number(parsed_num): #
             raise ValueError("O telefone fornecido não é um número possível.")
 
-        # 1.2. Verifica se é um número de celular válido para o Brasil
         if phonenumbers.number_type(parsed_num) != phonenumbers.PhoneNumberType.MOBILE: #
              raise ValueError("O telefone não parece ser um número de celular válido no Brasil.")
 
@@ -54,7 +51,11 @@ def login_user(data: LoginData): #
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Número de telefone inválido: {str(e)}"
         )
-    
+    token_data = {
+        "sub": data.telefone.strip(),
+        "nome": data.nome.strip()
+    }
+    access_token = create_access_token(data=token_data)
     # --- 2. BUSCA NA BASE DE DADOS ---
     # Verifica se a base está carregada e tem dados
     if sheets_service.STUDENTS_DATABASE is None or sheets_service.STUDENTS_DATABASE.empty:
@@ -72,13 +73,14 @@ def login_user(data: LoginData): #
         return {
             "status": "success",
             "message": "Cadastro inicial realizado. Prossiga para o questionário.",
-            "aluno_id": telefone_busca,
+            "access_token": access_token,      # <--- NOVO
+            "token_type": "bearer",
             "curso": None
-        } #
+        } 
     
-    # --- 3. TELEFONE ENCONTRADO ---
     aluno_data = aluno_db_match.iloc[0].to_dict()
     nome_correto_na_planilha = aluno_data.get('NOME', '').strip().lower()
+  
 
     # #4. VERIFICAÇÃO SECUNDÁRIA: Checa se o nome enviado bate com o nome na planilha.
     if nome_busca_lower != nome_correto_na_planilha:
@@ -96,7 +98,8 @@ def login_user(data: LoginData): #
         return {
             "status": "success",
             "message": "Login realizado e resultado encontrado!",
-            "aluno_id": telefone_busca,
+            "access_token": access_token,
+            "token_type": "bearer",
             "curso": resultado_questionario
         } #
     else:
@@ -104,29 +107,59 @@ def login_user(data: LoginData): #
         return {
             "status": "success",
             "message": "Cadastro inicial realizado. Prossiga para o questionário.",
-            "aluno_id": telefone_busca,
+            "access_token": access_token,
+            "token_type": "bearer",
             "curso": None
-        } #
-
+        } 
+    
 
 @app.post("/submit_results")
-def submit_results(data: ResultadoQuestionario):
-    """Armazena o resultado do questionário na lista PENDING_DATA_TO_SHEET."""
-    telefone_busca = data.telefone.strip() #
+def submit_results(data: ResultadoQuestionario, token: str = Depends(oauth2_scheme)):
+    payload = decode_access_token(token) 
     
+    if payload is None:
+        # Se decode_access_token retornar None, o token é inválido/expirado
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token inválido ou expirado.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    # O 'sub' é o identificador único (telefone) que você colocou no token.
+    telefone_do_token = payload.get("sub") 
+
+    # 1. VALIDAÇÃO: Garante que o ID do token é válido e existe.
+    if telefone_do_token is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token malformado: ID do usuário (sub) ausente.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    # 2. VALIDAÇÃO: Confere se o telefone no token bate com o telefone enviado no body (Dupla verificação de segurança).
+    if telefone_do_token != data.telefone.strip():
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Inconsistência de usuário. O telefone do token não corresponde ao telefone dos dados."
+        )
+        
+    telefone_busca = telefone_do_token # A fonte de verdade é o ID do token.
+    # ----------------------------------------------------
+    
+    # Lógica de registro existente (AGORA PROTEGIDA)
     registro = {
         "nome": data.nome.strip(),
-        "telefone_id": telefone_busca,
-        "curso_identificado": data.area_final.strip(),
+        "telefone_id": telefone_busca, # Usando o ID validado do token
+        "curso_identificado": data.area_final.strip(), # <--- Usando o campo correto do modelo ResultadoQuestionario
         "timestamp": datetime.datetime.now().isoformat()
-    } #
-    PENDING_DATA_TO_SHEET.append(registro) #
+    } 
+    PENDING_DATA_TO_SHEET.append(registro)
 
     return {
         "status": "success",
         "message": "Resultado do questionário armazenado com sucesso, aguardando coleta da Automação.",
         "data_received": registro
-    } #
+    }
 
 @app.get("/coletar_dados_para_planilha")
 def collect_and_clear_data():

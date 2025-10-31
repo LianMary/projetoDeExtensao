@@ -36,3 +36,5 @@ tzdata==2025.2
 urllib3==2.5.0
 uvicorn==0.37.0
 python-dotenv
+python-jose[cryptography]
+passlib[bcrypt]

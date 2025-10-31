@@ -1,8 +1,8 @@
-# sheets_service.py
 import gspread
 from gspread.utils import ValueInputOption
 import pandas as pd
 import os
+from gspread import client, exceptions
 
 
 SERVICE_ACCOUNT_FILE = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", "service_account.json")

@@ -1,51 +1,45 @@
+const calculateResult = (questions = [], userAnswerObject = {}) => {
+    // ter ctz q veio alguma coisa
+    if (!questions || !userAnswerObject) {
+        return { error: "Perguntas ou respostas não fornecidas." };
+    }
 
-const calculateResult = (questions = [], answers = []) => {
-	// Retornar um objeto com erro em vez de usar `res` diretamente (responsabilidade do controller)
-	if (!questions && !answers) {
-		return { error: 'Perguntas ou respostas não fornecidas' };
-	}
+    // userAnswerObject.answers vem assim:
+    // {
+    //    1: { questionID: 1, value: 4, category: "analytics" },
+    //    2: { questionID: 2, value: 5, category: "creativity" }
+    // }
 
-	const scores = {};
+    const answers = userAnswerObject.answers || {};
+    const scores = {};
 
-	// Inicializa áreas conhecidas a partir de questions (se fornecido)
-	if (Array.isArray(questions) && questions.length) {
-		questions.forEach((q) => {
-			if (q && q.area) scores[q.area] = scores[q.area] || 0;
-		});
-	}
+    // passa pelas resposta enviada
+    Object.values(answers).forEach((ans) => {
+        if (!ans) return;
 
-	// Somar pontos de acordo com a resposta. Aceitamos diferentes formatos de `answers`:
-	// - { questionId, value } com `questions` disponível que mapeia id->area
-	// - { area, value } diretamente na resposta
-	if (!Array.isArray(answers)) answers = [];
+        const category = ans.category;  
+        const value = Number(ans.value || 0);
 
-	answers.forEach((ans) => {
-		if (!ans) return;
-		// corrigir typo: usar `ans`, não `and`
-		const question = Array.isArray(questions)
-			? questions.find((q) => q && q.id === ans.questionId)
-			: undefined;
+        if (!scores[category]) scores[category] = 0;
 
-		const area = question ? question.area : (ans.area || ans.questionId);
-		if (!area) return;
+        scores[category] += value;
+    });
 
-		if (!scores[area]) scores[area] = 0;
-		scores[area] += Number(ans.value || 0);
-	});
+    // se nn tiver nada
+    const entries = Object.entries(scores);
+    if (entries.length === 0) {
+        return { scores, recommendedArea: null };
+    }
 
-	const entries = Object.entries(scores);
-	if (entries.length === 0) {
-		return { scores, recommendedArea: null };
-	}
+    // pega a maior categoria
+    const topArea = entries.reduce((max, curr) =>
+        curr[1] > max[1] ? curr : max
+    );
 
-	const topArea = entries.reduce((max, curr) => (curr[1] > max[1] ? curr : max), entries[0]);
-
-	return {
-		scores,
-		recommendedArea: topArea[0]
-	};
+    return {
+        scores,
+        recommendedArea: topArea[0]  // diz a area recomendada ne
+    };
 };
 
-export {
-	calculateResult
-};
+export { calculateResult };

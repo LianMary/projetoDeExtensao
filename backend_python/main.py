@@ -7,7 +7,7 @@ from .models import LoginData, ResultadoQuestionario
 from .auth import create_access_token,decode_access_token
 import backend_python.sheets_service as sheets_service
 from fastapi.security import OAuth2PasswordBearer
-
+import pandas as pd
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login") 
 PENDING_DATA_TO_SHEET = [] 
 
@@ -62,8 +62,8 @@ def login_user(data: LoginData):
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Base de dados de alunos não disponível no momento. Tente novamente mais tarde."
         )
-    telefones_planilha_limpos = sheets_service.STUDENTS_DATABASE['TELEFONE'].astype(str).str.replace(r'[^\d]', '', regex=True)
-    aluno_db_match = sheets_service.STUDENTS_DATABASE[telefones_planilha_limpos == telefone_busca_limpo] 
+ 
+    aluno_db_match = sheets_service.STUDENTS_DATABASE[sheets_service.STUDENTS_DATABASE['TELEFONE']==telefone_busca_limpo] 
     
     if aluno_db_match.empty:
         email_check = sheets_service.STUDENTS_DATABASE[
@@ -84,7 +84,7 @@ def login_user(data: LoginData):
             "curso": None
         } 
         
-    # **FLUXO DE LOGIN EXISTENTE (Telefone encontrado)**
+    # Se encontrou o aluno na base de dados
     aluno_data = aluno_db_match.iloc[0].to_dict()
     nome_correto_na_planilha = aluno_data.get('NOME', '').strip().lower()
     email_correto_na_planilha = aluno_data.get('EMAIL', '').strip().lower()

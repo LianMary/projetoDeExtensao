@@ -31,7 +31,6 @@ def load_spreadsheet_data():
             return
 
         worksheet = spreadsheet.sheet1
-        
         # 4. Obter todos os dados e converter para DataFrame
         data = worksheet.get_all_records()
         df = pd.DataFrame(data)
@@ -42,6 +41,8 @@ def load_spreadsheet_data():
             
         if 'NOME' in df.columns:
             df['NOME'] = df['NOME'].astype(str).str.strip()
+        if 'EMAIL' in df.columns:
+            df['EMAIL'] = df['EMAIL'].astype(str).str.strip().str.lower()
         # ----------------------------------------------------
             
         STUDENTS_DATABASE = df

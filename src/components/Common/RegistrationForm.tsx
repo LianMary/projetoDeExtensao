@@ -1,15 +1,13 @@
-// Cole este código completo em: src/components/common/RegistrationForm.tsx
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useState } from "react";
-// Removido useNavigate, pois não vamos redirecionar daqui
+import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent,CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { User, Phone, Loader2, Users } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast"; // Usaremos o toast para feedback
 

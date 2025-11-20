@@ -1,11 +1,9 @@
-// Substitua o conteúdo do seu arquivo src/pages/Index.tsx por este:
-
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { BookOpen, TrendingUp, Award, Brain, Target } from "lucide-react";
-import { RegistrationForm } from '@/components/Common/RegistrationForm';
+//import { RegistrationForm } from '@/components/Common/RegistrationForm';
 
 const Index = () => {
   const popularCourses = [
@@ -42,7 +40,7 @@ const Index = () => {
                 <div className="flex justify-center gap-6 text-sm mb-6">
                   <div className="flex items-center gap-2">
                     <Target className="w-4 h-4 text-primary" />
-                    <span>10 Perguntas</span>
+                    <span>15 Perguntas</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Award className="w-4 h-4 text-secondary" />
@@ -100,11 +98,7 @@ const Index = () => {
           </div>
         </div>
       </section>
-      
-      {/* Seção de Cadastro com o Formulário */}
-      <section className="py-24 px-4 bg-background">
-         <RegistrationForm /> {/* Renderiza o formulário aqui */}
-      </section>
+     
 
     </div>
   );

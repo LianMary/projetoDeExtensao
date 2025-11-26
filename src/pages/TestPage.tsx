@@ -1,8 +1,10 @@
+import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import ScaleQuestion from "@/components/ScaleQuestion";
 import { Award, Brain, ArrowRight, CheckCircle2 } from "lucide-react";
+
 
 // --- Definição das Perguntas e Tipos ---
 
@@ -113,6 +115,7 @@ const specificQuestions: Record<IntelligenceType, string[]> = {
 };
 
 const TestPage = () => {
+  const navigate = useNavigate(); 
   // Estados do Teste
   const [phase, setPhase] = useState<'initial' | 'specific' | 'result'>('initial');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);

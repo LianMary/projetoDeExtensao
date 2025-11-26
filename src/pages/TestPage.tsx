@@ -227,7 +227,8 @@ const resetTest = () => {
                   style={{ 
                     width: phase === 'initial' 
                       ? `${((currentQuestionIndex + 1) / initialQuestions.length) * 100}%`
-                      : `${((currentQuestionIndex + 1) / 6) * 100}%` // 6 perguntas na fase 2
+                      : `${((currentQuestionIndex + 1) / (dominantIntelligence ? specificQuestions[dominantIntelligence].length : 1)) * 100}%`
+
                   }}
                 ></div>
               </div>

@@ -197,7 +197,7 @@ const TestPage = () => {
               <Brain className="w-8 h-8 text-primary" />
             </div>
             <h2 className="text-3xl font-bold mb-4">Teste Vocacional</h2>
-            <p className="text-muted-foreground">
+            <p className="">
               {phase === 'initial' 
                 ? "Fase 1: Descobrindo suas aptidões principais." 
                 : phase === 'specific' 

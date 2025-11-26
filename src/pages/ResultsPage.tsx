@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { Award, Brain, ArrowLeft } from "lucide-react";
 
-const Results = () => {
+const ResultsPage= () => {
   const location = useLocation();
   const navigate = useNavigate();
   const state = location.state as any | undefined;
@@ -234,4 +234,4 @@ const Results = () => {
   );
 };
 
-export default Results;
+export default ResultsPage;

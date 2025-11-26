@@ -42,6 +42,12 @@ const App = () => (
           {/* Se a URL não for /login, ele usa esta estrutura */}
           <Route element={<MainLayout />}>
             <Route path="/" element={<Index />} /> {/* Página Inicial */}
+           
+            {/* ROTAS DO TESTE (adicionado dps, junto dos imports) */}
+      <Route path="/teste" element={<TestPage />} />
+      <Route path="/resultado" element={<ResultsPage />} />
+
+            
             {/* Página de erro para URLs não encontradas DENTRO do layout */}
             <Route path="*" element={<NotFound />} />
           </Route>

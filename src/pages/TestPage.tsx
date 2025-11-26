@@ -1,8 +1,10 @@
+import { useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import ScaleQuestion from "@/components/ScaleQuestion";
 import { Award, Brain, ArrowRight, CheckCircle2 } from "lucide-react";
+
 
 // --- Definição das Perguntas e Tipos ---
 
@@ -113,6 +115,7 @@ const specificQuestions: Record<IntelligenceType, string[]> = {
 };
 
 const TestPage = () => {
+  const navigate = useNavigate(); 
   // Estados do Teste
   const [phase, setPhase] = useState<'initial' | 'specific' | 'result'>('initial');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -124,62 +127,70 @@ const TestPage = () => {
   const [dominantIntelligence, setDominantIntelligence] = useState<IntelligenceType | null>(null);
 
   // Função para lidar com a resposta (1 a 5)
-  const handleAnswer = (value: number) => {
-    if (phase === 'initial') {
-      // Lógica da Fase 1
-      const currentCategory = initialQuestions[currentQuestionIndex].category;
-      
-      setScores(prev => ({
-        ...prev,
-        [currentCategory]: (prev[currentCategory] || 0) + value
-      }));
+ // Quando o usuário responde alguma pergunta
+const handleAnswer = (value: number) => {
+  if (phase === "initial") {
+    const currentCategory = initialQuestions[currentQuestionIndex].category;
 
-      setTimeout(() => {
-        if (currentQuestionIndex < initialQuestions.length - 1) {
-          setCurrentQuestionIndex(currentQuestionIndex + 1);
-        } else {
-          calculateDominantAndAdvance();
-        }
-      }, 400);
+    setScores(prev => ({
+      ...prev,
+      [currentCategory]: (prev[currentCategory] || 0) + value
+    }));
 
-    } else if (phase === 'specific') {
-      // Lógica da Fase 2 (Apenas avança, pois é um filtro de confirmação)
-      // Aqui poderíamos armazenar respostas específicas se necessário
-      setTimeout(() => {
-        const totalSpecific = dominantIntelligence ? specificQuestions[dominantIntelligence].length : 0;
-        if (currentQuestionIndex < totalSpecific - 1) {
-          setCurrentQuestionIndex(currentQuestionIndex + 1);
-        } else {
-          setPhase('result');
-        }
-      }, 400);
-    }
-  };
-
-  // Calcula qual categoria venceu e avança para a Fase 2
-  const calculateDominantAndAdvance = () => {
-    let maxScore = -1;
-    let winner: IntelligenceType = 'logico_matematica'; // Default
-
-    // Encontra a maior pontuação
-    (Object.keys(scores) as IntelligenceType[]).forEach(key => {
-      if (scores[key] > maxScore) {
-        maxScore = scores[key];
-        winner = key;
+    setTimeout(() => {
+      if (currentQuestionIndex < initialQuestions.length - 1) {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      } else {
+        calculateDominantAndAdvance();
       }
-    });
+    }, 400);
+  }
 
-    setDominantIntelligence(winner);
-    setPhase('specific');
-    setCurrentQuestionIndex(0); // Reseta o índice para as perguntas específicas
-  };
+  else if (phase === "specific") {
+    setTimeout(() => {
+      const totalSpecific = dominantIntelligence
+        ? specificQuestions[dominantIntelligence].length
+        : 0;
 
-  const resetTest = () => {
-    setPhase('initial');
-    setCurrentQuestionIndex(0);
-    setScores({});
-    setDominantIntelligence(null);
-  };
+      if (currentQuestionIndex < totalSpecific - 1) {
+        setCurrentQuestionIndex(currentQuestionIndex + 1);
+      } else {
+        navigate("/resultado", {
+          state: {
+            scores,
+            dominantIntelligence
+          }
+        });
+      }
+    }, 400);
+  }
+};
+
+// Calcula qual categoria venceu e avança para a fase 2
+const calculateDominantAndAdvance = () => {
+  let maxScore = -1;
+  let winner: IntelligenceType = "logico_matematica";
+
+  for (const key in scores) {
+    if (scores[key] > maxScore) {
+      maxScore = scores[key];
+      winner = key as IntelligenceType;
+    }
+  }
+
+  setDominantIntelligence(winner);
+  setPhase("specific");
+  setCurrentQuestionIndex(0);
+};
+
+// Reseta o teste se necessário
+const resetTest = () => {
+  setPhase("initial");
+  setCurrentQuestionIndex(0);
+  setScores({});
+  setDominantIntelligence(null);
+};
+
 
   // Renderização dos nomes amigáveis das áreas
   const formatCategoryName = (cat: string) => {
@@ -197,7 +208,7 @@ const TestPage = () => {
               <Brain className="w-8 h-8 text-primary" />
             </div>
             <h2 className="text-3xl font-bold mb-4">Teste Vocacional</h2>
-            <p className="text-muted-foreground">
+            <p className="">
               {phase === 'initial' 
                 ? "Fase 1: Descobrindo suas aptidões principais." 
                 : phase === 'specific' 
@@ -216,7 +227,8 @@ const TestPage = () => {
                   style={{ 
                     width: phase === 'initial' 
                       ? `${((currentQuestionIndex + 1) / initialQuestions.length) * 100}%`
-                      : `${((currentQuestionIndex + 1) / 6) * 100}%` // 6 perguntas na fase 2
+                      : `${((currentQuestionIndex + 1) / (dominantIntelligence ? specificQuestions[dominantIntelligence].length : 1)) * 100}%`
+
                   }}
                 ></div>
               </div>

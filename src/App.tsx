@@ -1,5 +1,3 @@
-// Substitua TODO o conteúdo do seu arquivo src/App.tsx por este:
-
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -11,7 +9,7 @@ import TestPage from "./pages/TestPage";
 import ResultsPage from "./pages/ResultsPage";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import StudentLogin from "./pages/StudentLogin"; // Garanta que este arquivo exista em src/pages
+import StudentLogin from "./pages/StudentLogin";
 import { Header } from "./components/Common/Header";
 
 const queryClient = new QueryClient();

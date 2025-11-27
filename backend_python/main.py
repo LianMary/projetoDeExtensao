@@ -11,8 +11,8 @@ from pydantic import BaseModel,Field,EmailStr
 import phonenumbers
 import datetime
 import re 
-from .models import LoginData, ResultadoQuestionario
-from .auth import create_access_token,decode_access_token
+from backend_python.models import LoginData, ResultadoQuestionario
+from backend_python.auth import create_access_token, decode_access_token
 import backend_python.sheets_service as sheets_service
 from backend_python.sheets_service import write_result_to_sheet
 from fastapi.security import OAuth2PasswordBearer

@@ -71,7 +71,7 @@ export function StudentLogin() {
       // ------------------------------------------
       // 🔥 LOGIN — USANDO O BACKEND DO RENDER
       // ------------------------------------------
-      const response = await apiFetch("/login", {
+      const response = await apiFetch("/api/login", {
         method: "POST",
         body: JSON.stringify({
           name: values.name,
@@ -98,7 +98,7 @@ export function StudentLogin() {
       // 🔥 CHECAGEM PARA SABER PRA ONDE REDIRECIONAR
       // ------------------------------------------
       const check = await apiFetch(
-        `/test_access?telefone=${normalizedPhone}`
+        `/api/test_access?telefone=${normalizedPhone}`
       );
 
       const checkData = await check.json();

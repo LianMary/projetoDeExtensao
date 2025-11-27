@@ -3,14 +3,14 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import ScaleQuestion from "@/components/ScaleQuestion";
-import { Award, Brain, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Brain } from "lucide-react";
 
 type IntelligenceType =
-  | 'logico_matematica'
+  | 'logicoMatematica'
   | 'linguistica'
   | 'espacial'
   | 'musical'
-  | 'corporal_cinestesica'
+  | 'corporalCinestesica'
   | 'interpessoal'
   | 'intrapessoal'
   | 'naturalista'
@@ -23,33 +23,33 @@ interface Question {
 }
 
 const categoryDisplayNames: Record<IntelligenceType, string> = {
-  logico_matematica: "Lógico-Matemática",
+  logicoMatematica: "Lógico-Matemática",
   linguistica: "Linguística",
   espacial: "Espacial",
   musical: "Musical",
-  corporal_cinestesica: "Corporal-Cinestésica",
+  corporalCinestesica: "Corporal-Cinestésica",
   interpessoal: "Interpessoal",
   intrapessoal: "Intrapessoal",
   naturalista: "Naturalista",
   existencial: "Existencial"
 };
 
-// Fase 1
+// FASE 1 — perguntas iniciais
 const initialQuestions: Question[] = [
-  { id: 1, text: "Você tem facilidade para resolver problemas matemáticos e pensar logicamente?", category: 'logico_matematica' },
+  { id: 1, text: "Você tem facilidade para resolver problemas matemáticos e pensar logicamente?", category: 'logicoMatematica' },
   { id: 2, text: "Você gosta de ler, escrever ou se expressar verbalmente?", category: 'linguistica' },
   { id: 3, text: "Consegue visualizar objetos e espaços facilmente, tendo bom senso de orientação?", category: 'espacial' },
   { id: 4, text: "Tem interesse por música, aprecia tocar instrumentos ou cantar?", category: 'musical' },
-  { id: 5, text: "Aprende melhor através do movimento, gosta de esportes, dança ou trabalhos manuais?", category: 'corporal_cinestesica' },
+  { id: 5, text: "Aprende melhor através do movimento, gosta de esportes, dança ou trabalhos manuais?", category: 'corporalCinestesica' },
   { id: 6, text: "Você se considera uma pessoa que entende bem as emoções e motiva os outros?", category: 'interpessoal' },
   { id: 7, text: "Prefere trabalhar sozinho, refletir sobre seus sentimentos e ter autoconhecimento?", category: 'intrapessoal' },
   { id: 8, text: "Tem interesse e facilidade para lidar com a natureza, plantas e animais?", category: 'naturalista' },
   { id: 9, text: "Costuma fazer perguntas profundas sobre a existência e busca sentido para a vida?", category: 'existencial' }
 ];
 
-// Fase 2
+// FASE 2 — perguntas específicas
 const specificQuestions: Record<IntelligenceType, string[]> = {
-  logico_matematica: [
+  logicoMatematica: [
     "Você prefere carreiras que envolvam cálculos, análise de dados ou raciocínio estratégico?",
     "Gostaria de trabalhar em áreas como engenharia, tecnologia, ciência ou finanças?",
     "Você se sente confortável lidando com orçamentos e projeções financeiras?",
@@ -81,7 +81,7 @@ const specificQuestions: Record<IntelligenceType, string[]> = {
     "Tem interesse pela parte técnica de shows, como acústica e sonorização?",
     "Imagina-se gerenciando carreiras de artistas ou eventos musicais?"
   ],
-  corporal_cinestesica: [
+  corporalCinestesica: [
     "Gostaria de trabalhar com educação física, fisioterapia ou esportes de alto rendimento?",
     "Tem interesse em artes cênicas, dança ou performance corporal?",
     "Prefere trabalhos manuais que exijam precisão, como cirurgia, odontologia ou artesanato?",
@@ -133,6 +133,7 @@ const TestPage = () => {
   const [dominantIntelligence, setDominantIntelligence] = useState<IntelligenceType | null>(null);
 
   const handleAnswer = (value: number) => {
+
     if (phase === "initial") {
       const newAnswers = [...answers];
       newAnswers[currentQuestionIndex] = value;
@@ -153,7 +154,7 @@ const TestPage = () => {
 
     else if (phase === "specific" && dominantIntelligence) {
       const cat = dominantIntelligence;
-      
+
       const newScores = { ...scores, [cat]: (scores[cat] || 0) + value };
       setScores(newScores);
 
@@ -163,10 +164,25 @@ const TestPage = () => {
         if (currentQuestionIndex < total - 1) {
           setCurrentQuestionIndex(prev => prev + 1);
         } else {
-          const chartData = Object.entries(newScores).map(([key, val]) => ({
-            name: categoryDisplayNames[key as IntelligenceType],
-            score: Math.min(100, Math.max(0, val * 10))
-          }));
+
+          // -------------------------------
+          // CHART COMPLETO (todas categorias)
+          // -------------------------------
+          const chartData = Object.entries(categoryDisplayNames).map(([key, label]) => {
+            let color = "#3b82f6"; // azul padrão
+
+            if (key === "logicoMatematica") {
+              color = "#2563eb"; // azul forte (DESTAQUE)
+            } else if (key === "corporalCinestesica") {
+              color = "#f97316"; // laranja destaque
+            }
+
+            return {
+              name: label,
+              score: Math.min(100, Math.max(0, (newScores[key] || 0) * 10)),
+              fill: color
+            };
+          });
 
           navigate("/resultado", {
             state: {
@@ -183,7 +199,7 @@ const TestPage = () => {
 
   const calculateDominantAndAdvance = (currentScores: Record<string, number>) => {
     let max = -1;
-    let winner: IntelligenceType = "logico_matematica";
+    let winner: IntelligenceType = "logicoMatematica";
 
     Object.entries(currentScores).forEach(([key, value]) => {
       if (value > max) {
@@ -221,6 +237,7 @@ const TestPage = () => {
 
           <div className="space-y-8 max-w-4xl mx-auto">
 
+            {/* Barra de progresso */}
             <div className="w-full bg-muted rounded-full h-2 mb-8">
               <div
                 className="bg-primary h-2 rounded-full transition-all duration-500"

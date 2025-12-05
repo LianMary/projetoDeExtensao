@@ -33,16 +33,7 @@ const ResultsPage = () => {
 
   const [professions, setProfessions] = useState("");
 
-  useEffect(() => {
-    const hasData =
-      (incomingAnswers && incomingAnswers.length > 0) ||
-      (incomingChart && incomingChart.length > 0) ||
-      (incomingScoresObj && Object.keys(incomingScoresObj).length > 0);
 
-    if (!hasData) navigate("/teste");
-  }, [incomingAnswers, incomingChart, incomingScoresObj, navigate]);
-
-  if (!incomingAnswers && !incomingChart && !incomingScoresObj) return null;
 
   const categories = [
     { name: "Lógico-Matemática", key: "logicoMatematica", initialQuestions: [1]},

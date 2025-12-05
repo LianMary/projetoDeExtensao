@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiFetch } from "@/services/api"; // 🔥 Usa o backend do Render automaticamente
+import { apiFetch } from "@/services/api"; 
 
 import { Button } from "@/components/ui/button";
 import {
@@ -66,11 +66,9 @@ export function StudentLogin() {
     setServerMessage(null);
 
     try {
-      const normalizedPhone = "+55" + values.phone;
+      const normalizedPhone = "55" + values.phone;
 
-      // ------------------------------------------
-      // 🔥 LOGIN — USANDO O BACKEND DO RENDER
-      // ------------------------------------------
+      
       const response = await apiFetch("/api/login", {
         method: "POST",
         body: JSON.stringify({
@@ -94,9 +92,9 @@ export function StudentLogin() {
       localStorage.setItem("nome", data.nome);
       localStorage.setItem("email", data.email);
 
-      // ------------------------------------------
-      // 🔥 CHECAGEM PARA SABER PRA ONDE REDIRECIONAR
-      // ------------------------------------------
+      
+      //CHECAGEM PARA SABER PRA ONDE REDIRECIONAR
+      
       const check = await apiFetch(
         `/api/test_access?telefone=${normalizedPhone}`
       );

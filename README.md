@@ -1,36 +1,20 @@
-# Teste Vocacional FB
+# Teste Vocacional
+Indeciso sobre qual área de atuação você deveria seguir após terminar o Ensino Médio?! Não se preocupe! Realize o nosso teste vocacional de maneira gratuita e decida o seu próximo passo acadêmico com base nas suas proeficiências e afinidades! 
+
 
 ## Informações do Projeto
-Decida seu próximo passo acadêmico com a ajuda do Teste Vocacional.
+Decida seu próximo passo acadêmico com a ajuda do Teste Vocacional! 
+Esse é um projeto feito para a diciplina da faculdade de Análise e Desenvolvimento de Sistemas da UniFametro para a matéria de PRÁTICA PROFISSIONAL E INOVAÇÃO PARA O MERCADO DE TRABALHO. Cada um dos colaboradores desse projeto foi responsável por uma área, sendo ela Backend, Frontend, UX e Banco de Dados. 
 
-## Como editar o código
+O projeto está disponivel nesse site abaixo: 
 
-Requisições: Instale o NodeJS e o npm - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+https://projeto-extensao-pi.vercel.app/
 
-Siga os passos::
-
-```sh
-# Step 1: Clone o repositório de uma branch especifica. 
-git clone --b <nome da branch> <YOUR_GIT_URL>
-
-# Step 2: Vá no diretório que está o projeto.
-cd <nome do projeto>
-ex: cd vocational-test
-
-# Step 3: Instale as dependencias.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview. Começe o desenvolvimento e o server autocarregavel e a preview do projeto.
-npm run dev
-
-# Caso tenha clonado uma branch diferente, utilize esse comando para mudar de branch no terminal do VSCode:
-git checkout < nome da branch> 
-
-```
 ## Tecnologias Utilizadas:
 
-- Vite
+- Vite 
 - TypeScript
 - React
-- shadcn-ui
+- Shadcn-ui
 - Tailwind CSS
+- Python
